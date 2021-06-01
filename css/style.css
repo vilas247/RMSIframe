@@ -1,0 +1,409 @@
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('../fonts/SofiaPro-Bold.eot');
+    src: url('../fonts/SofiaPro-Bold.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/SofiaPro-Bold.woff2') format('woff2'),
+        url('../fonts/SofiaPro-Bold.woff') format('woff'),
+        url('../fonts/SofiaPro-Bold.ttf') format('truetype'),
+        url('../fonts/SofiaPro-Bold.svg#SofiaPro-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('../fonts/SofiaPro-Light.eot');
+    src: url('../fonts/SofiaPro-Light.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/SofiaPro-Light.woff2') format('woff2'),
+        url('../fonts/SofiaPro-Light.woff') format('woff'),
+        url('../fonts/SofiaPro-Light.ttf') format('truetype'),
+        url('../fonts/SofiaPro-Light.svg#SofiaPro-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('../fonts/SofiaPro-Medium.eot');
+    src: url('../fonts/SofiaPro-Medium.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/SofiaPro-Medium.woff2') format('woff2'),
+        url('../fonts/SofiaPro-Medium.woff') format('woff'),
+        url('../fonts/SofiaPro-Medium.ttf') format('truetype'),
+        url('../fonts/SofiaPro-Medium.svg#SofiaPro-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('../fonts/SofiaProRegular.eot');
+    src: url('../fonts/SofiaProRegular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/SofiaProRegular.woff2') format('woff2'),
+        url('../fonts/SofiaProRegular.woff') format('woff'),
+        url('../fonts/SofiaProRegular.ttf') format('truetype'),
+        url('../fonts/SofiaProRegular.svg#SofiaProRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro Semi';
+    src: url('../fonts/SofiaPro-SemiBold.eot');
+    src: url('../fonts/SofiaPro-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/SofiaPro-SemiBold.woff2') format('woff2'),
+        url('../fonts/SofiaPro-SemiBold.woff') format('woff'),
+        url('../fonts/SofiaPro-SemiBold.ttf') format('truetype'),
+        url('../fonts/SofiaPro-SemiBold.svg#SofiaPro-SemiBold') format('svg');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+a {
+	color: #485561;
+}
+
+
+body {
+	background-color: #FBFBFD;
+	 font-size: 16px;
+	 font-family: 'Sofia Pro';
+	 font-weight: normal;
+	 color: #485561;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	font-family: 'Sofia Pro';
+	font-weight: 500;
+}
+
+/*p {
+	font-family: 'Open Sans', sans-serif;
+	font-family: 'DM Sans', sans-serif;
+}*/
+
+.content-area {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+.box {
+    background: #fff;
+    padding: 50px;
+    box-shadow: 0px 50px 50px #0000000D;
+    border: 1px solid #E5EAF4;
+}
+@media (max-width:575px){
+    .box {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0px 50px 50px #0000000D;
+    border: 1px solid #E5EAF4;
+}
+}
+.box h1 {
+	font-size: 40px;
+}
+
+.box h4 {
+	font-size: 23px;
+	margin-bottom: 45px;
+	color: rgba(0, 0, 0, 6.0);
+}
+
+.box .form-group {
+	margin-bottom: 25px;
+}
+
+.input-group-addon a {
+	color:  rgba(158,160,165,0.5);
+}
+
+#show_hide_password .input-group-addon {
+    position: absolute;
+    right: 10px;
+    top: 14px;
+    z-index: 4;
+}
+
+.input-height input {
+    height: 50px;
+}
+
+.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3),
+.input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+	border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.btn-primary{
+	background-color: #1AAD4C;
+	border-color: #1AAD4C;
+	color: #fff;
+}
+
+.btn-primary.active,
+.btn-primary:hover,
+.btn-primary:focus {
+	background-color: #1AAD4C;
+	border-color: #1AAD4C;
+	color: #fff;
+	box-shadow: 0 0 0 transparent !important;
+}
+
+button.btn.btn-create {
+	font-size: 23px;
+	font-weight: 300;
+	font-family: 'Sofia Pro';
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a.btn-forget {
+		display: inline-block;
+		margin-top: 6px;
+		font-size: 18px;
+		font-weight: 500;
+		color: rgba(0, 0, 0, 0.6);
+}
+
+.signin p {
+	font-size: 20px;
+	margin-top: 20px;
+	color: #6B6C6F;
+}
+
+.signin p a {
+	color: #1AAD4C;
+	font-size: 20px;
+	padding-left: 5px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 10%);
+}
+
+label {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: rgba(0, 0, 0, 6.0);
+}
+
+.form-control {
+	font-size: 20px;
+		color: rgba(0, 0, 0, 6.0);
+		border-color: rgba(226,229,237,0.5);
+		border-width: 2px;
+		border-radius: 4px;
+}
+
+.choose-website h2 {
+	font-size: 44px;
+	font-weight: 400;
+    color: #000000;
+}
+
+.choose-website ul {
+	list-style: none;
+	margin:  40px 0 0;
+	padding: 0;
+}
+
+.choose-website ul li:first-child {
+	margin-bottom: 30px;
+}
+
+.choose-website li a {
+	font-size: 22px;
+	color: #000;
+	font-weight: 400;
+	text-decoration: none;
+	position: relative;
+}
+
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 15px solid #1AAD4C;
+  border-bottom: 15px solid transparent;
+  border-top: 15px solid transparent;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s ease;
+}
+
+.choose-website li a:hover .arrow-down {
+	opacity: 1;
+	visibility: visible;
+}
+
+.choose-website li a:hover {
+	padding-left: 20px;
+	color: #000000;
+    font-weight:bold;
+}
+
+a {
+	transition: all 0.5s ease;
+}
+
+.login-form  input {
+	background: rgba(143,146,161,0.05);
+	border: 0;
+	border-radius: 8px;
+	font-size: 16px;
+	color: #8F92A1;
+	font-weight: 300;
+	padding-left: 25px;
+	padding-right: 25px;
+}
+
+.login-form .btn-lg {
+		font-weight: 300 !important;
+}
+
+.btn-white {
+	background-color: #fff !important;
+	border-color: rgba(112,112,112,0.3) !important;
+	color: #8F92A1;
+	border-radius: 4px !important;
+	font-size: 18px !important;
+}
+
+.btn-white:hover,
+.btn-white:focus {
+	color: #fff;
+	background-color: #2956A0 !important;
+	border-color: #2956A0 !important;	
+}
+
+.txt-how a {
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.txt-how a:hover {
+	text-decoration: none;
+	color: #485561;
+}
+
+.login-form h5 {
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 16px;
+	font-weight: 300;
+	margin-bottom: 30px;
+}
+
+.login-form h3 {
+	color: #485561;
+	font-size: 26px;
+	font-weight: 400;
+	padding-bottom: 10px;
+}
+
+.login-form .input-group-addon a {
+	color: rgba(158,160,165,1);
+}
+
+.brd-btm {
+	border-bottom: 1px solid rgba(157,177,188,0.2);
+}
+
+.lanch-store h3 {
+	margin-bottom: 0;
+	position: relative;
+	top: 10px;
+	font-size: 22px;
+	color: #000;
+}
+
+.lanch-store label {
+	font-size: 15px;
+	color: #000;
+    font-weight:600;
+}
+
+.lanch-store .form-control {
+	font-size: 15px;
+    font-weight:500;
+}
+.rms-8 label {
+	font-size: 18px;
+	color: #000;
+    font-weight:500;
+}
+.rms-8 label a{
+	font-size: 18px;
+	color: #000;
+    font-weight:500;
+    text-decoration:underline;
+}
+.rms-8 .form-control,.rms-8 span {
+	font-size: 12px;
+    font-weight:500;
+    color:#9EA0A5;
+}
+
+button.btn-store {
+	font-weight: 400 !important;
+	font-size: 16px;
+	padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+button.btn-store:hover,
+button.btn-store:focus {
+		background-color: #1AAD4C !important;
+    border-color: #1AAD4C !important;
+}
+
+button.btn-store img {
+	position: relative;
+	top:  -2px;
+}
+
+@media (min-width: 768px) {
+	.custom-width .offset-md-4 {
+    margin-left: 28.5%;
+	}
+	.custom-width .col-md-4 {
+	    flex: 0 0 auto;
+	    width: 43%;
+	}
+
+	.custom-width2 .offset-md-4 {
+    margin-left: 25%;
+	}
+	.custom-width2 .col-md-4 {
+	    flex: 0 0 auto;
+	    width: 50%;
+	}
+	
+}
+.rms-design .btn-acc{
+    background: #1AAD4C;
+    color: #fff;
+    font-weight: 500 !important;
+}
+.rms-design .enable-but{
+    border: 1px solid #D8DCE6;
+    border-radius: 6px;
+}
+.rms-design .enable-but .btn{
+    font-size:14px;
+    color:#3E3F42;
+}
