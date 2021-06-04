@@ -71,7 +71,7 @@
                       </div>
                    </form>
                 </div>
-                <div class="col-md-12 vendor-logo text-center"><img src="images/card-saver.png"></div>
+                <div class="col-md-12 vendor-logo text-center"><img src="images/logo.png"></div>
              </div>
           </div>
        </div>

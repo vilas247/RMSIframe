@@ -38,7 +38,7 @@
             <div class="choose-website">
               <h2>Do you have a BigCommerce Website?</h2>
               <ul>
-                <li><a href="signup.php"><span class="arrow-down"></span> Yes, I have a BigCommerce Website.</a></li>
+                <li><a target="_blank" href="https://www.bigcommerce.com/apps/"><span class="arrow-down"></span> Yes, I have a BigCommerce Website.</a></li>
                 <li><a href="newBigiStore.php"><span class="arrow-down"></span> No? Click here to create a new one!</a></li>
               </ul>
             </div>
