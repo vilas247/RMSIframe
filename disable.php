@@ -29,8 +29,8 @@ if(isset($_SESSION['is247Email'])){
 }
 
 	if(!empty($email_id)){
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+		$stmt->execute([$email_id]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		//print_r($result[0]);exit;
@@ -41,10 +41,10 @@ if(isset($_SESSION['is247Email'])){
 				$acess_token = $result['acess_token'];
 				$store_hash = $result['store_hash'];
 				deleteScripts($sellerdb,$acess_token,$store_hash,$email_id);
-				$usql = "update rms_token_validation set is_enable=0 where email_id='".$email_id."'";
+				$usql = "update rms_token_validation set is_enable=? where email_id=?";
 				//echo $usql;exit;
 				$stmt = $conn->prepare($usql);
-				$stmt->execute();
+				$stmt->execute(['0',$email_id]);
 				header("Location:dashboard.php?disabled=1");
 			}else{
 				header("Location:dashboard.php");
@@ -59,8 +59,8 @@ if(isset($_SESSION['is247Email'])){
 function deleteScripts($sellerdb,$acess_token,$store_hash,$email_id){
 	$rStatus = 0;
 	$conn = getConnection();
-	$stmt = $conn->prepare("select * from rms_scripts where script_email_id='".$email_id."'");
-	$stmt->execute();
+	$stmt = $conn->prepare("select * from rms_scripts where script_email_id=?");
+	$stmt->execute([$email_id]);
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $stmt->fetchAll();
 	//print_r($result[0]);exit;
@@ -87,9 +87,9 @@ function deleteScripts($sellerdb,$acess_token,$store_hash,$email_id){
 			$res = curl_exec($ch);
 			//print_r($res);exit;
 			curl_close($ch);
-			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","script_tag_deletion","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-			//echo $log_sql;exit;
-			$conn->exec($log_sql);
+			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+			$stmt= $conn->prepare($log_sql);
+			$stmt->execute([$email_id, "BigCommerce", "script_tag_deletion",addslashes($url),addslashes($request),addslashes($res)]);
 			if(empty($res)){
 				$sql = 'delete from rms_scripts where script_id='.$v['script_id'];
 				//echo $sql;exit;

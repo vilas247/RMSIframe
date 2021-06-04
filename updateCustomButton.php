@@ -19,14 +19,14 @@ if(isset($_SESSION['is247Email'])){
 if(isset($_REQUEST['container_id'])){
 	$conn = getConnection();
 	if(!empty($email_id)){
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+		$stmt->execute([$email_id]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		
 		if (count($result) > 0) {
-			$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id='".$email_id."'");
-			$stmt_c->execute();
+			$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id=?");
+			$stmt_c->execute([$email_id]);
 			$stmt_c->setFetchMode(PDO::FETCH_ASSOC);
 			$result_c = $stmt_c->fetchAll();
 			$enable = 0;
@@ -34,20 +34,21 @@ if(isset($_REQUEST['container_id'])){
 				$enable = 1;
 			}
 			if (count($result_c) > 0) {
-				$usql = 'update custom_rmspay_button set container_id="'.$_REQUEST['container_id'].'",css_prop="'.$_REQUEST['css_prop'].'",html_code="'.htmlentities($_REQUEST['html_code']).'",is_enabled="'.$enable.'" where email_id="'.$email_id.'"';
+				$usql = 'update custom_rmspay_button set container_id=?,css_prop=?,html_code=?,is_enabled=? where email_id=?';
 				// execute the query
-				$conn->exec($usql);
+				$stmt_u = $conn->prepare($usql);
+				$stmt_u->execute([$_REQUEST['container_id'],$_REQUEST['css_prop'],htmlentities($_REQUEST['html_code']),$enable,$email_id]);
 				$sellerdb = $result[0]['sellerdb'];
 				alterFile($sellerdb,$email_id);
 			}else{
-				$isql = 'insert into custom_rmspay_button(email_id,container_id,css_prop,is_enabled,html_code) values("'.$email_id.'","'.$_REQUEST['container_id'].'","'.$_REQUEST['css_prop'].'","'.$enable.'","'.htmlentities($_REQUEST['html_code']).'")';
+				$isql = 'insert into custom_rmspay_button(email_id,container_id,css_prop,is_enabled,html_code) values(?,?,?,?,?)';
 				$stmt_i = $conn->prepare($isql);
 				// execute the query
-				$stmt_i->execute();
+				$stmt_i->execute([$email_id,$_REQUEST['container_id'],$_REQUEST['css_prop'],$enable,htmlentities($_REQUEST['html_code'])]);
 				$sellerdb = $result[0]['sellerdb'];
 				alterFile($sellerdb,$email_id);
 			}
-			header("Location:customButton.php");
+			header("Location:customButton.php?updated=1");
 		}else{
 			header("Location:dashboard.php");
 		}
@@ -64,8 +65,8 @@ function alterFile($sellerdb,$email_id){
 	if(!empty($sellerdb)){
 		$folderPath = './'.$sellerdb;
 		
-		$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id='".$email_id."'");
-		$stmt_c->execute();
+		$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id=?");
+		$stmt_c->execute([$email_id]);
 		$stmt_c->setFetchMode(PDO::FETCH_ASSOC);
 		$result_c = $stmt_c->fetchAll();
 		if (count($result_c) > 0) {

@@ -25,8 +25,8 @@ if(isset($_SESSION['is247Email'])){
 	If already Verified redirect to Home Page
 */
 if(!empty($email_id)){
-	$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-	$stmt->execute();
+	$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+	$stmt->execute([$email_id]);
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $stmt->fetchAll();
 	//print_r($result[0]);exit;
@@ -76,6 +76,8 @@ if(!empty($email_id)){
     <link href="css/custom/style.css" rel="stylesheet">
     <link href="css/custom/main.css" rel="stylesheet">
     <link href="css/custom/media.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/toaster/toaster.css">
+	<link rel="stylesheet" href="css/247rmsiframeloader.css">
 
 </head>
 
@@ -84,7 +86,7 @@ if(!empty($email_id)){
 <section class="inner-top">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 text-center logo"> <img src="images/vendor_logo.jpg" alt="logo" class="img-responsive"></div>
+			<div class="col-md-12 text-center logo"> <img src="images/logo.png" style="height:90px;" alt="logo" class="img-responsive"></div>
 		</div>
 	</div>
 </section>
@@ -105,14 +107,14 @@ if(!empty($email_id)){
 		</div>
 		<div class="row rows">
 			<div class="order-details-bg settle">
-				<form action="updateCustomButton.php" method="POST" >
+				<form action="updateCustomButton.php" id="updateCustomButton" method="POST" >
 					<input type="hidden" name="bc_email_id" value="<?= @$_REQUEST['bc_email_id'] ?>" />
 					<?php
 						$container_id = '.checkout-step--payment .checkout-view-header';
 						$html_code = '<button id="form-submit" type="submit" class="button button--action button--large button--slab optimizedCheckout-buttonPrimary" style="background-color: #424242;border-color: #424242;color: #fff;" disabled>Continue</button>';
 						$css_prop = '#form-submit{display:block; background-color: #00FF00 !important; color: #000000 !important; border-color: #FF0000 !important;}';
-						$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id='".$email_id."'");
-						$stmt_c->execute();
+						$stmt_c = $conn->prepare("select * from custom_rmspay_button where email_id=?");
+						$stmt_c->execute([$email_id]);
 						$stmt_c->setFetchMode(PDO::FETCH_ASSOC);
 						$result_c = $stmt_c->fetchAll();
 						if(count($result_c) > 0){
@@ -147,7 +149,12 @@ if(!empty($email_id)){
 	</div>
 </section>
 <script src="js/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="js/toaster/jquery.toaster.js"></script>
+<script type="text/javascript" charset="utf8" src="js/247rmsiframeloader.js"></script>
 <script>
+			var text = "Please wait...";
+		var current_effect = "bounce";
+		
 			var id = '<?= $container_id ?>';
 			var css = '<?= base64_encode($css_prop) ?>';
 			var html_code = '<?= $html_code ?>';
@@ -156,6 +163,41 @@ if(!empty($email_id)){
 				$('body #css_prop').val(window.atob(css));
 				$('body #html_code').val(html_code);
 			});
+			$('body').on('submit','#updateCustomButton',function(e){
+				$("body").waitMe({
+					effect: current_effect,
+					text: text,
+					bg: "rgba(255,255,255,0.7)",
+					color: "#000",
+					maxSize: "",
+					waitTime: -1,
+					source: "images/img.svg",
+					textPos: "vertical",
+					fontSize: "",
+					onClose: function(el) {}
+				});
+			});
+var getUrlParameter = function getUrlParameter(sParam) {
+	var sPageURL = window.location.search.substring(1),
+		sURLVariables = sPageURL.split("&"),
+		sParameterName,
+		i;
+
+	for (i = 0; i < sURLVariables.length; i++) {
+		sParameterName = sURLVariables[i].split("=");
+
+		if (sParameterName[0] === sParam) {
+			return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+		}
+	}
+	return false;
+};
+$(document).ready(function(){
+	var updated = getUrlParameter('updated');
+	if(updated){
+		$.toaster({ priority : "success", title : "Success", message : "RMS Payments Custom button updated for your Store,Please wait for some time and check the changes" });
+	}
+});
 </script>
 </body>
 

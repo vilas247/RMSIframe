@@ -39,7 +39,7 @@
               <h2>Do you have a BigCommerce Website?</h2>
               <ul>
                 <li><a href="signup.php"><span class="arrow-down"></span> Yes, I have a BigCommerce Website.</a></li>
-                <li><a href="https://www.bigcommerce.com/essentials/free-trial/"><span class="arrow-down"></span> No? Click here to create a new one!</a></li>
+                <li><a href="newBigiStore.php"><span class="arrow-down"></span> No? Click here to create a new one!</a></li>
               </ul>
             </div>
         </div>

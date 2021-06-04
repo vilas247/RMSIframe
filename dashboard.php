@@ -29,8 +29,8 @@ if(isset($_SESSION['is247Email'])){
 }
 
 
-$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-$stmt->execute();
+$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+$stmt->execute([$email_id]);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $result = $stmt->fetchAll();
 //print_r($result[0]);exit;
@@ -70,13 +70,15 @@ if (isset($result[0])) {
     <!-- Custom CSS -->
     <link href="css/custom/style.css" rel="stylesheet">
     <link href="css/custom/main.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/toaster/toaster.css">
+	<link rel="stylesheet" href="css/247rmsiframeloader.css">
    </head>
    <body style="background-color:#fbfbfd">
 	  <header>
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <img src="images/vendor_logo.jpg" style="height:90px;" alt="logo" class="img-responsive">
+                    <img src="images/logo.png" style="height:90px;" alt="logo" class="img-responsive">
                 </div>
 
                 <div class="col-md-12 marTP-30">
@@ -96,8 +98,8 @@ if (isset($result[0])) {
     <section class="order-section">
          <div class="container">
 			<?php
-				$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-				$stmt->execute();
+				$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+				$stmt->execute([$email_id]);
 				$stmt->setFetchMode(PDO::FETCH_ASSOC);
 				$result = $stmt->fetchAll();
 				//print_r($result[0]);exit;
@@ -177,9 +179,9 @@ if (isset($result[0])) {
 
 							<tbody>
 								<?php
-									$sql_res = "SELECT opd.api_response,opd.id,opd.settlement_status,opd.type,opd.amount_paid,opd.email_id as email,opd.order_id as nvoice_id,od.order_id,opd.status,opd.currency,opd.total_amount,opd.created_date FROM order_payment_details opd LEFT JOIN order_details od ON opd.order_id = od.invoice_id WHERE opd.email_id='".$email_id."' order by opd.id desc LIMIT 0,3";
+									$sql_res = "SELECT opd.api_response,opd.id,opd.settlement_status,opd.type,opd.amount_paid,opd.email_id as email,opd.order_id as nvoice_id,od.order_id,opd.status,opd.currency,opd.total_amount,opd.created_date FROM order_payment_details opd LEFT JOIN order_details od ON opd.order_id = od.invoice_id WHERE opd.email_id=? order by opd.id desc LIMIT 0,3";
 									$stmt_res = $conn->prepare($sql_res);
-									$stmt_res->execute();
+									$stmt_res->execute([$email_id]);
 									$stmt_res->setFetchMode(PDO::FETCH_ASSOC);
 									$result_final = $stmt_res->fetchAll();
 									if(count($result_final) > 0){
@@ -301,24 +303,53 @@ if (isset($result[0])) {
       <!-- Include all compiled plugins (below), or include individual files as needed -->
       <script src="js/bootstrap.min.js"></script>
       <script src="js/bootstrap.bundle.min.js"></script>
+	  <script type="text/javascript" charset="utf8" src="js/toaster/jquery.toaster.js"></script>
+	<script type="text/javascript" charset="utf8" src="js/247rmsiframeloader.js"></script>
 	  <style>
 		.modal-backdrop{
 			opacity: 0!important;
 		}
 	  </style>
       <script type="text/javascript">
+		var text = "Please wait...";
+		var current_effect = "bounce";
 		$(document).ready(function() {
 			$(".modal-backdrop").remove();
 			$('body').on('change','#actionChange',function(){
+				$("body").waitMe({
+					effect: current_effect,
+					text: text,
+					bg: "rgba(255,255,255,0.7)",
+					color: "#000",
+					maxSize: "",
+					waitTime: -1,
+					source: "images/img.svg",
+					textPos: "vertical",
+					fontSize: "",
+					onClose: function(el) {}
+				});
 				var val = $(this).val();
 				if(val == "0"){
 					var url = 'enable.php';
 					window.location.href = url;
 				}else{
 					$('body #exampleModalCenter').modal('show');
+					$("body").waitMe("hide");
 				}
 			});
 			$('body').on('click','#deleteConfirm',function(e){
+				$("body").waitMe({
+					effect: current_effect,
+					text: text,
+					bg: "rgba(255,255,255,0.7)",
+					color: "#000",
+					maxSize: "",
+					waitTime: -1,
+					source: "images/img.svg",
+					textPos: "vertical",
+					fontSize: "",
+					onClose: function(el) {}
+				});
 				var url = 'disable.php';
 				window.location.href = url;
 			});
@@ -334,6 +365,18 @@ if (isset($result[0])) {
 				$('body #deleteModalCenter').modal('hide');
 			});
 			$('body').on('click','#deleteConfirmStore',function(e){
+				$("body").waitMe({
+					effect: current_effect,
+					text: text,
+					bg: "rgba(255,255,255,0.7)",
+					color: "#000",
+					maxSize: "",
+					waitTime: -1,
+					source: "images/img.svg",
+					textPos: "vertical",
+					fontSize: "",
+					onClose: function(el) {}
+				});
 				var url = 'uninstallStore.php';
 				window.location.href = url;
 			});
@@ -418,11 +461,11 @@ if (isset($result[0])) {
 		$(document).ready(function(){
 			var enabled = getUrlParameter('enabled');
 			if(enabled){
-				alert("Retail Merchant Payments enabled for your Store");
+				$.toaster({ priority : "success", title : "Success", message : "Retail Merchant Payments enabled for your Store" });
 			}
 			var disabled = getUrlParameter('disabled');
 			if(disabled){
-				alert("Retail Merchant Payments disabled for your Store");
+				$.toaster({ priority : "success", title : "Success", message : "Retail Merchant Payments disabled for your Store" });
 			}
 		});
          

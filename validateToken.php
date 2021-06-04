@@ -25,8 +25,8 @@ if(isset($_SESSION['is247Email'])){
 if(isset($_REQUEST['merchant_id']) && isset($_REQUEST['cardstream_signature']) && isset($_REQUEST['acess_token']) && isset($_REQUEST['store_hash'])){
 	$conn = getConnection();
 	if(!empty($email_id)){
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+		$stmt->execute([$email_id]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		//print_r($result[0]);exit;
@@ -37,13 +37,13 @@ if(isset($_REQUEST['merchant_id']) && isset($_REQUEST['cardstream_signature']) &
 				$valid = createCustomPage($email_id,$_REQUEST['store_hash'],$_REQUEST['acess_token']);
 				if($valid){
 					$data = createFolder($sellerdb,$email_id);
-					$sql = 'update rms_token_validation set merchant_id="'.$_REQUEST['merchant_id'].'",cardstream_signature="'.$_REQUEST['cardstream_signature'].'",acess_token="'.$_REQUEST['acess_token'].'",store_hash="'.$_REQUEST['store_hash'].'" where email_id="'.$email_id.'"';
+					$sql = 'update rms_token_validation set merchant_id=?,cardstream_signature=?,acess_token=?,store_hash=? where email_id=?';
 					//echo $sql;exit;
 					$stmt = $conn->prepare($sql);
-					$stmt->execute();
+					$stmt->execute([$_REQUEST['merchant_id'],$_REQUEST['cardstream_signature'],$_REQUEST['acess_token'],$_REQUEST['store_hash'],$email_id]);
 					if(isset($_REQUEST['is_enable']) && $_REQUEST['is_enable'] == "Enable"){
-						$stmt_s = $conn->prepare("select * from rms_scripts where script_email_id='".$email_id."'");
-						$stmt_s->execute();
+						$stmt_s = $conn->prepare("select * from rms_scripts where script_email_id=?");
+						$stmt_s->execute([$email_id]);
 						$stmt_s->setFetchMode(PDO::FETCH_ASSOC);
 						$result_s = $stmt_s->fetchAll();
 						//print_r($result[0]);exit;
@@ -120,9 +120,9 @@ function createCustomPage($email_id,$store_hash,$acess_token){
 	$res = curl_exec($ch);
 	curl_close($ch);
 	//print_r($res);exit;
-	$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","Custom Page","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-	//echo $log_sql;exit;
-	$conn->exec($log_sql);
+	$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+		$stmt= $conn->prepare($log_sql);
+		$stmt->execute([$email_id,"BigCommerce","Custom Page",addslashes($url),addslashes($request),addslashes($res)]);
 	if(!empty($res)){
 		$check_errors = json_decode($res);
 		if(isset($check_errors->errors)){
@@ -131,8 +131,9 @@ function createCustomPage($email_id,$store_hash,$acess_token){
 				$res = json_decode($res,true);
 				if(isset($res['id'])){
 					$valid = true;
-					$sqli = "insert into 247custompages(email_id,page_bc_id,api_response) values('".$email_id."','".$res['id']."','".addslashes(json_encode($res))."')";
-					$conn->exec($sqli);
+					$sqli = "insert into 247custompages(email_id,page_bc_id,api_response) values(?,?,?)";
+					$stmt= $conn->prepare($sqli);
+					$stmt->execute([$email_id,$res['id'],addslashes(json_encode($res))]);
 				}
 			}
 		}
@@ -185,15 +186,16 @@ function createScripts($sellerdb,$acess_token,$store_hash,$email_id){
 		$res = curl_exec($ch);
 		curl_close($ch);
 		//print_r($res);exit;
-		$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","script_tag_injection","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-		//echo $log_sql;exit;
-		$conn->exec($log_sql);
+		$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+		$stmt= $conn->prepare($log_sql);
+		$stmt->execute([$email_id, "BigCommerce", "script_tag_injection",addslashes($url),addslashes($request),addslashes($res)]);
 		if(!empty($res)){
 			$response = json_decode($res,true);
 			if(isset($response['data']['uuid'])){
-				$sql = 'insert into rms_scripts(script_email_id,script_filename,script_code,status,api_response) values("'.$email_id.'","'.basename($v).'","'.$response['data']['uuid'].'","1","'.addslashes($res).'")';
+				$sql = 'insert into rms_scripts(script_email_id,script_filename,script_code,status,api_response) values(?,?,?,?,?)';
 				//echo $sql;exit;
-				$conn->exec($sql);
+				$stmt= $conn->prepare($sql);
+				$stmt->execute([$email_id, basename($v), $response['data']['uuid'],"1",addslashes($res)]);
 				$rStatus++;
 			}
 		}

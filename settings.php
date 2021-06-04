@@ -28,8 +28,8 @@ if(isset($_SESSION['is247Email'])){
 	$email_id = $_SESSION['is247Email'];
 }
 
-$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-$stmt->execute();
+$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+$stmt->execute([$email_id]);
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $result = $stmt->fetchAll();
 //print_r($result[0]);exit;
@@ -67,13 +67,15 @@ if (isset($result[0])) {
 
     <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/toaster/toaster.css">
+	<link rel="stylesheet" href="css/247rmsiframeloader.css">
 
 </head>
   <body>
     <main class="main-content py-5 rms-design">
       <div class="container">
         <div class="row">
-          <form class="" action="validateToken.php" method="POST" >
+          <form class="" action="validateToken.php" method="POST" id="validateToken" >
 		  <div class="col-md-12 box rms-8">
             <div class="row brd-btm">
                 <div class="col-md-10 col-lg-8 mb-3">
@@ -124,5 +126,25 @@ if (isset($result[0])) {
     </main>
     <script src="js/jquery-min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" charset="utf8" src="js/toaster/jquery.toaster.js"></script>
+	<script type="text/javascript" charset="utf8" src="js/247rmsiframeloader.js"></script>
+	<script>
+		var text = "Please wait...";
+		var current_effect = "bounce";
+		$('body').on('submit','#validateToken',function(e){
+				$("body").waitMe({
+					effect: current_effect,
+					text: text,
+					bg: "rgba(255,255,255,0.7)",
+					color: "#000",
+					maxSize: "",
+					waitTime: -1,
+					source: "images/img.svg",
+					textPos: "vertical",
+					fontSize: "",
+					onClose: function(el) {}
+				});
+		});
+	</script>
   </body>
   </html>

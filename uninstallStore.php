@@ -26,8 +26,8 @@ function unInstallScripts($email){
 	if(!empty($email)){
 		$conn = getConnection();
 				
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+		$stmt->execute([$email]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		//print_r($result[0]);exit;
@@ -61,8 +61,8 @@ function unInstallScripts($email){
 function deleteScripts($sellerdb,$acess_token,$store_hash,$email_id){
 	$rStatus = 0;
 	$conn = getConnection();
-	$stmt = $conn->prepare("select * from rms_scripts where script_email_id='".$email_id."'");
-	$stmt->execute();
+	$stmt = $conn->prepare("select * from rms_scripts where script_email_id=?");
+	$stmt->execute([$email_id]);
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $stmt->fetchAll();
 	//print_r($result[0]);exit;
@@ -89,9 +89,9 @@ function deleteScripts($sellerdb,$acess_token,$store_hash,$email_id){
 			$res = curl_exec($ch);
 			//print_r($res);exit;
 			curl_close($ch);
-			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","script_tag_deletion","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-			//echo $log_sql;exit;
-			$conn->exec($log_sql);
+			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+			$stmt= $conn->prepare($log_sql);
+			$stmt->execute([$email_id, "BigCommerce", "script_tag_deletion",addslashes($url),addslashes($request),addslashes($res)]);
 
 			$sql = 'delete from rms_scripts where script_id='.$v['script_id'];
 			//echo $sql;exit;
@@ -102,8 +102,8 @@ function deleteScripts($sellerdb,$acess_token,$store_hash,$email_id){
 function deleteCustomPage($sellerdb,$acess_token,$store_hash,$email_id){
 	$rStatus = 0;
 	$conn = getConnection();
-	$stmt = $conn->prepare("select * from 247custompages where email_id='".$email_id."'");
-	$stmt->execute();
+	$stmt = $conn->prepare("select * from 247custompages where email_id=?");
+	$stmt->execute([$email_id]);
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $stmt->fetchAll();
 	//print_r($result[0]);exit;
@@ -128,9 +128,9 @@ function deleteCustomPage($sellerdb,$acess_token,$store_hash,$email_id){
 			$res = curl_exec($ch);
 			//print_r($res);exit;
 			curl_close($ch);
-			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","Page Deletion","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-			//echo $log_sql;exit;
-			$conn->exec($log_sql);
+			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+			$stmt= $conn->prepare($log_sql);
+			$stmt->execute([$email_id, "BigCommerce", "Custom Page Deletion",addslashes($url),addslashes($request),addslashes($res)]);
 			if(empty($res)){
 				$sql = 'delete from 247custompages where id='.$v['id'];
 				//echo $sql;exit;
@@ -142,10 +142,13 @@ function deleteCustomPage($sellerdb,$acess_token,$store_hash,$email_id){
 function uninstallWebhooks($email_id,$store_hash,$acess_token){
 
 	$conn = getConnection();
-	$sql = "select * from 247webhooks where email_id='".$email_id."'";
-	$result = $conn->query($sql);
-	if ($result->num_rows > 0) {
-		while($v = $result->fetch_assoc()) {
+	$stmt = $conn->prepare("select * from 247webhooks where email_id=?");
+	$stmt->execute([$email_id]);
+	$stmt->setFetchMode(PDO::FETCH_ASSOC);
+	$result = $stmt->fetchAll();
+	//print_r($result[0]);exit;
+	if (count($result) > 0) {
+		foreach($result as $k=>$v){
 			$url = STORE_URL.$store_hash.'/v3/hooks/'.$v['webhook_bc_id'];
 			$header = array(
 				"X-Auth-Token: ".$acess_token,
@@ -164,6 +167,9 @@ function uninstallWebhooks($email_id,$store_hash,$acess_token){
 			$res = curl_exec($ch);
 			curl_close($ch);
 			//print_r($res);exit;
+			$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+			$stmt= $conn->prepare($log_sql);
+			$stmt->execute([$email_id, "BigCommerce", "Webhooks",addslashes($url),addslashes($request),addslashes($res)]);
 			if(!empty($res)){
 				$check_errors = json_decode($res);
 				if(isset($check_errors->errors)){

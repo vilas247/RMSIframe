@@ -26,8 +26,8 @@ $conn = getConnection();
 
 if(isset($_REQUEST['bc_email_id'])){
 	$email_id = $_REQUEST['bc_email_id'];
-	$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-	$stmt->execute();
+	$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+	$stmt->execute([$email_id]);
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $stmt->fetchAll();
 	if (isset($result[0])) {
@@ -69,7 +69,7 @@ if(isset($_REQUEST['bc_email_id'])){
 		<section class="inner-top">
 			<div class="container">
 				<div class="row">
-				   <div class="col-md-12 text-center logo"> <img src="images/vendor_logo.jpg" alt="logo" class="img-responsive"></div>
+				   <div class="col-md-12 text-center logo"> <img src="images/logo.png" style="height:90px;" alt="logo" class="img-responsive"></div>
 				</div>
 			</div>
 		</section>

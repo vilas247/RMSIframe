@@ -15,8 +15,8 @@ if(isset($_REQUEST['email_id']) && isset($_REQUEST['password'])){
 	$conn = getConnection();
 	$email_id = @$_REQUEST['email_id'];
 	if(!empty($email_id)){
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."' and password='".$_REQUEST['password']."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=? and password=?");
+		$stmt->execute([$email_id,$_REQUEST['password']]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		//print_r($result[0]);exit;

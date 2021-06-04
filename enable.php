@@ -24,8 +24,8 @@ if(isset($_SESSION['is247Email'])){
 }
 
 	if(!empty($email_id)){
-		$stmt = $conn->prepare("select * from rms_token_validation where email_id='".$email_id."'");
-		$stmt->execute();
+		$stmt = $conn->prepare("select * from rms_token_validation where email_id=?");
+		$stmt->execute([$email_id]);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$result = $stmt->fetchAll();
 		//print_r($result[0]);exit;
@@ -37,10 +37,10 @@ if(isset($_SESSION['is247Email'])){
 				$store_hash = $result['store_hash'];
 				$res = createScripts($sellerdb,$acess_token,$store_hash,$email_id);
 				if($res == "1"){
-					$usql = "update rms_token_validation set is_enable=1 where email_id='".$email_id."'";
+					$usql = "update rms_token_validation set is_enable=? where email_id=?";
 					//echo $usql;exit;
 					$stmt = $conn->prepare($usql);
-					$stmt->execute();
+					$stmt->execute(['1',$email_id]);
 				}
 				header("Location:dashboard.php?enabled=1");
 			}else{
@@ -58,7 +58,7 @@ function createScripts($sellerdb,$acess_token,$store_hash,$email_id){
 	$url = array();
 	$rStatus = 0;
 	$url[] = JS_SDK;
-	$url[] = CSIFRAME_SDK;
+	$url[] = RMSIFRAME_SDK;
 	$url[] = JSVALIDATE_SDK;
 	$url[] = BASE_URL.$sellerdb.'/custom_script.js';
 	foreach($url as $k=>$v){
@@ -99,15 +99,16 @@ function createScripts($sellerdb,$acess_token,$store_hash,$email_id){
 		$res = curl_exec($ch);
 		curl_close($ch);
 		//print_r($res);exit;
-		$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values("'.$email_id.'","BigCommerce","script_tag_injection","'.addslashes($url).'","'.addslashes($request).'","'.addslashes($res).'")';
-		//echo $log_sql;exit;
-		$conn->exec($log_sql);
+		$log_sql = 'insert into api_log(email_id,type,action,api_url,api_request,api_response) values(?,?,?,?,?,?)';
+		$stmt= $conn->prepare($log_sql);
+		$stmt->execute([$email_id, "BigCommerce", "script_tag_injection",addslashes($url),addslashes($request),addslashes($res)]);
 		if(!empty($res)){
 			$response = json_decode($res,true);
 			if(isset($response['data']['uuid'])){
-				$sql = 'insert into rms_scripts(script_email_id,script_filename,script_code,status,api_response) values("'.$email_id.'","'.basename($v).'","'.$response['data']['uuid'].'","1","'.addslashes($res).'")';
+				$sql = 'insert into rms_scripts(script_email_id,script_filename,script_code,status,api_response) values(?,?,?,?,?)';
 				//echo $sql;exit;
-				$conn->exec($sql);
+				$stmt= $conn->prepare($sql);
+				$stmt->execute([$email_id, basename($v), $response['data']['uuid'],"1",addslashes($res)]);
 				$rStatus++;
 			}
 		}
